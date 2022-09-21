@@ -31,9 +31,17 @@ class SongsService {
     return result.rows[0].id;
   }
 
-  async getSongs() {
-    const query = 'SELECT id, title, performer FROM songs';
-
+  async getSongs(title, performer) {
+    let query = '';
+    if (title && performer) {
+      query = `SELECT id, title, performer FROM songs WHERE title ILIKE '%${title}%' AND performer ILIKE '%${performer}%' --case insensitive`;
+    } else if (title) {
+      query = `SELECT id, title, performer FROM songs WHERE title ILIKE '%${title}%' --case insensitive`;
+    } else if (performer) {
+      query = `SELECT id, title, performer FROM songs WHERE performer ILIKE '%${performer}%' --case insensitive`;
+    } else {
+      query = 'SELECT id, title, performer FROM songs';
+    }
     const result = await this._pool.query(query);
 
     return result.rows;
