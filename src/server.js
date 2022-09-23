@@ -6,6 +6,7 @@ const AlbumsService = require('./services/postgres/AlbumsService');
 const AlbumsValidator = require('./validator/albums');
 const SongsService = require('./services/postgres/SongsService');
 const SongsValidator = require('./validator/songs');
+const ClientError = require('./exceptions/ClientError');
 
 const init = async () => {
   const albumsService = new AlbumsService();
@@ -37,6 +38,20 @@ const init = async () => {
       },
     },
   ]);
+
+  server.ext('onPreResponse', (request, h) => {
+    const { response } = request;
+    if (response instanceof ClientError) {
+      const newResponse = h.response({
+        status: 'fail',
+        anjer: 'aha',
+        message: response.message,
+      });
+      newResponse.code(response.statusCode);
+      return newResponse;
+    }
+    return response.continue || response;
+  });
 
   await server.start();
   console.log(`Server running on ${server.info.uri}`);
