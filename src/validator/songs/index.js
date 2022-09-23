@@ -9,6 +9,6 @@ const SongsValidator = {
       throw new InvariantError(validationResult.error.message);
     }
   },
-}
+};
 
 module.exports = SongsValidator;
