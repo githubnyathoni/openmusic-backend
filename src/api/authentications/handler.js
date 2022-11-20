@@ -19,9 +19,8 @@ class AuthenticationsHandler {
     const userId = await this._usersService.verifyUserCredential(username, password);
     const accessToken = this._tokenManager.generateAccessToken({ userId });
     const refreshToken = this._tokenManager.generateRefreshToken({ userId });
-    // console.log(this._authenticationsService.addRefreshToken(refreshToken));
-    const a = await this._authenticationsService.addRefreshToken(refreshToken);
-    console.log(a);
+
+    await this._authenticationsService.addRefreshToken(refreshToken);
 
     const response = h.response({
       status: 'success',
